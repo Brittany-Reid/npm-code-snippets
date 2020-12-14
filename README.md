@@ -1,12 +1,7 @@
 # npm-code-snippets
 Extract code snippets from NPM package documentation.
 
-API for extracting code snippets from NPM package documentation. 
-
-Features:
-
-- Download and extract code snippets from NPM package README files just using a package name.
-- Extract code snippets from markdown files and strings.
+In Progress!
 
  ## Install
  
@@ -38,29 +33,48 @@ npm-code-snoppets [options] <package>
 
 ## API
 
-### extract(content : string, options : object)
+### get(name : string, options : object) : Array
 
-Extract code snippets from a markdown string.
-
-TODO
-
-### extractForName(name : string, options : object)
-
-Extract code snippets given a package name, using the NPM registry to fetch the package's README.
-
-TODO
-
-### Options
-
-| Option | Type | Description |
-| - | - | - |
-| `langauge` | Array [] | Array of markdown syntax highlighting languages to allow. |
-
-Example:
+Given a package name, download and extract code snippets for that package. Returns an array of strings.
 
 ```node
-options = {
-    languages: ["node", "js", "sh"]
-}
+//TODO
 ```
 
+### extract(contents : string, options : object) : Array
+
+Given a string of markdown, extract code snippets. Returns an array of strings.
+
+```node
+//TODO
+```
+
+## Contributing
+
+//TODO
+
+### Tests
+
+NCS uses mocha and nyc for testing.
+
+Install developer dependencies using:
+
+```sh
+//TODO
+```
+
+You can run the mocha test cases using:
+
+```sh
+npm run tests
+```
+
+You can also run the nyc coverage using:
+
+```sh 
+npm run coverage
+```
+
+## See More
+
+- The code in NCS was originally used to extract code snippets for [node_code_query](https://github.com/damorimRG/node_code_query), a REPL environment with integrated code search.

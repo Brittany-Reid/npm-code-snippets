@@ -20,5 +20,6 @@
   "homepage": "https://github.com/Brittany-Reid/npm-code-snippets#readme",
   "dependencies": {
     "commander": "^6.2.0"
-  }
+  },
+  "devDependencies": {}
 }

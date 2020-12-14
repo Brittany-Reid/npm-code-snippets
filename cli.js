@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-const { Command } = require('commander');
-const Extractor = require('.');
+const { Command } = require("commander");
+const snippets = require(".");
 const npm_package = require("./package.json");
 
 //package details
@@ -16,16 +16,16 @@ const program = new Command();
 program.name(NAME);
 program.version(VERSION);
 program.description(DESCRIPTION, {
-    package: "NPM package to get code snippets from."
+	package: "NPM package to get code snippets from."
 });
 
 //options
-program.option('-d, --debug', 'output extra debugging');
+program.option("-d, --debug", "output extra debugging");
 
 //argument
 program.arguments("<package>");
 program.action(function (package) {
-    run(package)
+	run(package);
 });
 
 //parse
@@ -36,7 +36,7 @@ program.parse(process.argv);
  * @param {string} name The name of the package to extract code snippets from.
  */
 function run(name){
-    console.log("Extracting code snippets for NPM package: " + name);
-    Extractor.extractForName(name);
+	console.log("Extracting code snippets for NPM package: " + name);
+	snippets.get(name);
 }
 
