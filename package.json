@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node cli.js",
-    "test": ""
+    "tests": "mocha tests",
+    "coverage": "nyc npm run tests"
   },
   "bin": "./cli.js",
   "repository": {
@@ -21,5 +22,8 @@
   "dependencies": {
     "commander": "^6.2.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "mocha": "^8.2.1",
+    "nyc": "^15.1.0"
+  }
 }

@@ -57,12 +57,6 @@ Given a string of markdown, extract code snippets. Returns an array of strings.
 
 NCS uses mocha and nyc for testing.
 
-Install developer dependencies using:
-
-```sh
-//TODO
-```
-
 You can run the mocha test cases using:
 
 ```sh
