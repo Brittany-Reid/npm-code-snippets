@@ -60,7 +60,7 @@ NCS uses mocha and nyc for testing.
 You can run the mocha test cases using:
 
 ```sh
-npm run tests
+npm run test
 ```
 
 You can also run the nyc coverage using:
