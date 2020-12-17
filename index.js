@@ -2,7 +2,6 @@ var Extractor = require("./lib/extractor/extractor");
 var {Downloader, HTTPStatusError} = require("./lib/extractor/downloader");
 const Logger = require("./lib/extractor/logger");
 
-
 /**
  * 
  * @param {String} markdown String of markdown text.
@@ -11,6 +10,7 @@ const Logger = require("./lib/extractor/logger");
 function extract(markdown){
 	var extractor = new Extractor();
 	var snippets = extractor.extract(markdown);
+	Logger.debug("Filtering out snippets of langauge: " + [...extractor.filtered]);
 	return snippets;
 }
 

@@ -2,7 +2,7 @@
 
 const { Command } = require("commander");
 const { HTTPStatusError } = require(".");
-const snippets = require(".");
+const ncs = require(".");
 const Logger = require("./lib/extractor/logger");
 const npm_package = require("./package.json");
 
@@ -45,12 +45,17 @@ async function run(name){
 	Logger.infoEnabled = true;
 
 	Logger.info("Extracting code snippets for NPM package: " + name);
-	var readme;
+	var snippets;
 	try{
-		readme = await snippets.get(name);
+		snippets = await ncs.get(name);
 	} catch(e){
 		Logger.info("Unable to generate snippets for package \"" + name + "\".");
 	}
-	if(readme) console.log(readme);
+	if(snippets){
+		for(var s of snippets){
+			console.log([s]);
+			console.log("\n----------------\n\n");
+		}
+	}
 }
 

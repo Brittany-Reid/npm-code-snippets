@@ -28,5 +28,22 @@ describe("Extractor", function () {
 				assert.strictEqual(snippets[0], snippet);
 			});
 		});
+		describe("filter()", function(){
+			it("Should return false for empty for default lang filter", function(){
+				var extractor = new Extractor();
+				var filter = extractor.filter("", undefined);
+				assert.strictEqual(filter, false);
+			});
+			it("Should return false for node for default lang filter", function(){
+				var extractor = new Extractor();
+				var filter = extractor.filter("", "node");
+				assert.strictEqual(filter, false);
+			});
+			it("Should filer out sh for default lang filter", function(){
+				var extractor = new Extractor();
+				var filter = extractor.filter("", "sh");
+				assert.strictEqual(filter, true);
+			});
+		});
 	});
 });
