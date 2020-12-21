@@ -10,7 +10,9 @@ const Logger = require("./lib/extractor/logger");
 function extract(markdown){
 	var extractor = new Extractor();
 	var snippets = extractor.extract(markdown);
-	Logger.debug("Filtering out snippets of langauge: " + [...extractor.filtered]);
+	var filtered = extractor.filteredLanguages();
+	var langs = Object.keys(filtered);
+	if(langs.length > 0) Logger.debug("Filtering out snippets of langauge: " + langs.join(", "));
 	return snippets;
 }
 

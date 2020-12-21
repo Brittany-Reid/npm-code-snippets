@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 const { Command } = require("commander");
-const { HTTPStatusError } = require(".");
 const ncs = require(".");
 const Logger = require("./lib/extractor/logger");
 const npm_package = require("./package.json");
@@ -52,8 +51,9 @@ async function run(name){
 		Logger.info("Unable to generate snippets for package \"" + name + "\".");
 	}
 	if(snippets){
+		console.log("");
 		for(var s of snippets){
-			console.log([s]);
+			console.log(s);
 			console.log("\n----------------\n\n");
 		}
 	}
