@@ -110,6 +110,22 @@ describe("Downloader", function () {
 				var readme = await downloader.getReadmeFromRepo(data);
 				assert.strictEqual(typeof readme, "string");
 			}).timeout(0);
+			it("Should look in version if no filename", async function(){
+				var downloader = new Downloader();
+				//mock data
+				var data = {
+					repository:{
+						url: "https://github.com/brittany-reid/npm-code-snippets.git"
+					},
+					versions: {
+						"1.0.0" : {
+							readmeFilename : "README.md"
+						}
+					}
+				};
+				var readme = await downloader.getReadmeFromRepo(data);
+				assert.strictEqual(typeof readme, "string");
+			}).timeout(0);
 			it("Should error when no url field", async function(){
 				var downloader = new Downloader();
 				//mock data
@@ -182,6 +198,20 @@ describe("Downloader", function () {
 				//change it back!
 				Downloader.download = oldDownload;
 			}).timeout(0);
+		});
+		describe("getReadmeFromVersions()", function(){
+			it("Should get README from version field", function(){
+				var downloader = new Downloader();
+				var data = {
+					versions: {
+						"1.0.0":{
+							readme : "this is a readme"
+						}
+					}
+				};
+				var readme = downloader.getReadmeFromVersions(data);
+				assert.strictEqual(typeof readme, "string");
+			});
 		});
 		describe("getReadme()", function(){
 			it("Should throw error when no name argument", async function() {

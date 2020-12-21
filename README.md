@@ -23,7 +23,7 @@ npm install -g
 
 ### CLI:
 ```sh
-npm-code-snoppets [options] <package> 
+npm-code-snippets [options] <package> 
 ```
 
 ### Node.js:

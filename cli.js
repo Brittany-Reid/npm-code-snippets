@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 const { Command } = require("commander");
-const ncs = require(".");
-const Logger = require("./lib/extractor/logger");
+const {NCS} = require(".");
+const Logger = require("./lib/logger");
 const npm_package = require("./package.json");
 
 //package details
@@ -29,6 +29,7 @@ program.action(function (package) {
 	run(package);
 });
 
+
 //parse
 program.parse(process.argv);
 
@@ -43,11 +44,14 @@ async function run(name){
 	//enable info for cli
 	Logger.infoEnabled = true;
 
+	var ncs = new NCS();
+
 	Logger.info("Extracting code snippets for NPM package: " + name);
 	var snippets;
 	try{
 		snippets = await ncs.get(name);
 	} catch(e){
+		console.log(e);
 		Logger.info("Unable to generate snippets for package \"" + name + "\".");
 	}
 	if(snippets){
