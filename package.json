@@ -2,7 +2,7 @@
   "name": "npm-code-snippets",
   "version": "1.0.0",
   "description": "Extract code snippets from NPM packages",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
     "start": "node cli.js",
     "test": "mocha tests",
