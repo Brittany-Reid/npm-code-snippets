@@ -228,14 +228,15 @@ describe("Downloader", function () {
 				var readme = await downloader.getReadme("@npm/decorate");
 				assert(typeof readme === "string");
 			}).timeout(0);
-			it("Throw error for NPM's No README found error", async function(){
-				var downloader = new Downloader();
-				//this is a broken package on the npmjs.com site
-				var name = "@npm/css-reset";
-				var error = Error(downloader.errors.noReadmeNPM.replace("%s", name));
-				await assert.rejects(async () =>{ await downloader.getReadme(name);}, error);
-				//assert(readme === "ERROR: No README data found!");
-			}).timeout(0);
+			// actually can get a readme from versions sometimes when this happens, so dont error
+			// it("Throw error for NPM's No README found error", async function(){
+			// 	var downloader = new Downloader();
+			// 	//this is a broken package on the npmjs.com site
+			// 	var name = "@npm/css-reset";
+			// 	var error = Error(downloader.errors.noReadmeNPM.replace("%s", name));
+			// 	await assert.rejects(async () =>{ await downloader.getReadme(name);}, error);
+			// 	//assert(readme === "ERROR: No README data found!");
+			// }).timeout(0);
 			it("Should fallback to readme entry on registry if no repository field", async function(){
 				var downloader = new Downloader();
 				//this package has no repository field but a readme

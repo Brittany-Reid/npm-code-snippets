@@ -16,10 +16,10 @@ describe("Extractor", function () {
 			it("Should extract a code snippet", function(){
 				var extractor = new Extractor();
 				var snippet = "var a = 0;\n"
-                + "console.log(\"a\");\n";
+                + "console.log(\"a\");";
 				var markdown = "This is a markdown string\n"
                 + "```\n"
-                + snippet
+                + snippet + "\n"
                 + "```\n";
 				var snippets = extractor.extract(markdown);
 				assert.strictEqual(snippets[0], snippet);
@@ -34,6 +34,18 @@ describe("Extractor", function () {
                 + "```\n";
 				var snippets = extractor.extract(markdown);
 				assert.strictEqual(snippets.length, 0);
+			});
+			it("Should work for escaped", function(){
+				var extractor = new Extractor();
+				var snippet = "```\n"
+				+ "console.log(\"a\");\n"
+				+ "```\n";
+				var markdown = "This is a markdown string\n"
+				+ "````\n"
+				+ snippet + "\n"
+                + "````\n";
+				var snippets = extractor.extract(markdown);
+				assert.strictEqual(snippets[0], snippet);
 			});
 		});
 		describe("filterLanguage()", function(){
@@ -63,7 +75,7 @@ describe("Extractor", function () {
 				assert.strictEqual(filter, false);
 			});
 		});
-		describe("filteredLanguages()", function(){
+		describe("filteredLanguages", function(){
 			it("Should return filtered languages after extraction", function(){
 				var extractor = new Extractor();
 				var snippet = "var a = 0;\n"
@@ -76,7 +88,7 @@ describe("Extractor", function () {
                 + snippet
                 + "```\n";
 				extractor.extract(markdown);
-				var filtered = extractor.filteredLanguages();
+				var filtered = extractor.filteredLanguages;
 				assert.strictEqual(filtered["sh"], 2);
 			});
 		});

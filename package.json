@@ -20,7 +20,8 @@
   },
   "homepage": "https://github.com/Brittany-Reid/npm-code-snippets#readme",
   "dependencies": {
-    "commander": "^6.2.0"
+    "commander": "^6.2.0",
+    "marked": "^1.2.7"
   },
   "devDependencies": {
     "mocha": "^8.2.1",

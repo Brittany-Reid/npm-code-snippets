@@ -72,7 +72,7 @@ The downloader follows the following process:
 3. Fallback to the `readme` field in the registry data.
 4. If the `readme` field is empty, look for the most recent `readme` in the `versions` field. Sometimes the `readme` field will be empty despite there being a README available on the NPM website.
 
-The `examples/miner.js` example shows how `Downloader` can be used to mine the NPM registry, while preserving errors that may be useful for statistic purposes.
+The `examples/miner.js` example shows how `Downloader` can be used to mine the NPM registry.
 
 #### new Downloader(options: {})
 
@@ -110,7 +110,7 @@ The extractor class includes functionality to extract code snippets from markdow
 
 By default, Extractor looks at the langauge flags used for syntax highlighting, for example:
 
-````
+````markdown
 ```node
 console.log("test");
 ```
@@ -119,8 +119,28 @@ console.log("test");
 And filters out code marked with non-node or javascript tags.
 
 #### new Extractor(options: {})
-Construct a new instance of Extractor.
+Construct a new instance of Extractor, with an optional options object.
 
+```js
+const { Extractor } = require("npm-code-snippets");
+
+var extractor = new Extractor();
+```
+
+|Option|Type|Description|
+|-|-|-|
+|`langaugeFilter`|`string[]`|Array of string langauge aliases to use as either a whitelist or blacklist, depending on the `whitelist` option. By default uses the aliases in `Extractor.NODE_ALIAS` and `Extractor.NO_ALIAS`. 
+|`whitelist`|`boolean`|Sets the langauge filter to a whitelist on `true`, a blacklist on `false`. By default set to `true`.
+
+#### extract(markdown: string): string[]
+Extract code snippets from a given string of markdown text.
+
+```js
+const { Extractor } = require("npm-code-snippets");
+
+var extractor = new Extractor();
+var results = extractor.extract("```\nvar a;\n```\n");
+```
 
 ## Contributing
 

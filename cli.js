@@ -1,97 +1,138 @@
-// #!/usr/bin/env node
+#!/usr/bin/env node
+const fs = require("fs");
+const { Command } = require("commander");
 
-// const { Command } = require("commander");
-// const {NCS} = require(".");
-// const Logger = require("./lib/logger");
-// const Runner = require("./lib/runner/runner");
-// const npm_package = require("./package.json");
+const snippets = require("./lib");
+const { Downloader } = require("./lib");
 
-// //package details
-// const NAME = npm_package.name;
-// const VERSION = npm_package.version;
-// const DESCRIPTION = npm_package.description;
+//get package details from package.json
+const npm_package = require("./package.json");
 
-// //setup commander
-// const program = new Command();
+// package details as consts
+const NAME = npm_package.name;
+const VERSION = npm_package.version;
+const DESCRIPTION = npm_package.description;
 
-// //information
-// program.name(NAME);
-// program.version(VERSION);
-// program.description(DESCRIPTION, {
-// 	package: "NPM package to get code snippets from."
-// });
+//options
+var save = false;
+var verbose = false;
 
-// //options
-// program.option("-d, --debug", "output extra debugging");
+// setup commander
+const program = new Command();
+// information
+program.name(NAME);
+program.version(VERSION, "--version");
+program.description(DESCRIPTION, {
+	package: "NPM package name"
+});
+program.usage("<package> [options]");
 
-// //argument
-// program.arguments("<package>");
-// program.action(function (package) {
-// 	run(package);
-// });
+//options
+program.option("-v, --verbose", "output additional information");
+program.option("-s, --save <path>", "save output to file");
 
-// program.command("run <package>").action(function(package){
-// 	test(package);
-// });
+//commands
+//default get snippets
+program.command("snippets <package>", {isDefault: true}).description("get snippets for <package>").action(function(package){
+	snippet(package);
+});
 
+//get readme
+program.command("readme <package>").description("get readme for <package>").action(function(package){
+	readme(package);
+});
 
-// //parse
-// program.parse(process.argv);
+// handle arguments
+program.parse(process.argv);
+if(program.save) save = true;
+if(program.verbose) verbose = true;
 
-// if(program.debug) Logger.debugEnabled = true;
+function output(string){
+	console.log(string);
+}
 
+function info(string){
+	if(!verbose) return;
+	console.log("INFO: " + string);
+}
 
-// /**
-//  * Function to run the extraction of code snippets given a package name.
-//  * @param {string} name The name of the package to extract code snippets from.
-//  */
-// async function run(name){
-// 	//enable info for cli
-// 	Logger.infoEnabled = true;
+function noReadme(err, name, downloader){
+	output("Could not download README for package \"" + name + "\".");
+	if(!verbose){
+		output("Try -v, --verbose to see additional information for this run.");
+	} 
+	var errors = downloader.events;
+	errors.push(err.message);
+        
+	for(var e of errors){
+		if(e === "No Repository"){
+			info("No repository field, falling back to registry data.");
+		}
+		if(e === "No README could be found."){
+			info("No README data available.");
+		}
+		if(e === "Package not found."){
+			info("Package not found.");
+		}
+	}
 
-// 	var ncs = new NCS();
+}
 
-// 	Logger.info("Extracting code snippets for NPM package: " + name);
-// 	var snippets;
-// 	try{
-// 		snippets = await ncs.get(name);
-// 	} catch(e){
-// 		console.log(e);
-// 		Logger.info("Unable to generate snippets for package \"" + name + "\".");
-// 	}
-// 	if(snippets){
-// 		console.log("");
-// 		for(var s of snippets){
-// 			console.log(s);
-// 			console.log("\n----------------\n\n");
-// 		}
-// 	}
-// }
+async function snippet(name){
+	output("Getting Snippets for package \"" + name + "\".");
+    
+	var results; 
+	try{
+		results = await snippets.get(name);
+	} catch(e){
+		if(e.message === "No README could be found."){
+			var downloader = snippets.downloader;
+			noReadme(e, name, downloader);
+		}
+		else{
+			output("Cannot extract snippets for package \"" + name + "\".");
+		}
+        
+		return;
+	}
+    
+	if(!save){
+		for(var s of results){
+			output("---");
+			output(s);
+			output("---");
+		}
+	}
+	else{
+		var out = {
+			name: name,
+			snippets: results,
+		};
+		fs.writeFileSync(program.save, JSON.stringify(out));
+		output("Saved at: " + program.save);
+	}
 
-// async function test(name){
-// 	var ncs = new NCS();
-// 	var snippets;
-// 	try{
-// 		snippets = await ncs.get(name);
-// 	} catch(e){
-// 		console.log(e);
-// 		Logger.info("Unable to generate snippets for package \"" + name + "\".");
-// 	}
-// 	if(snippets){
-// 		console.log("");
-// 		var count = 0;
-// 		for(var s of snippets){
-// 			//console.log(s);
-// 			var runner = new Runner();
-// 			var ran = await runner.run(s);
-// 			if(ran){
-// 				console.log("Pass");
-// 				count++;
-// 			}
-// 			else{
-// 				console.log("Fail");
-// 			}
-// 			console.log(ran);
-// 		}
-// 	}
-// }
+}
+
+async function readme(name){
+	output("Getting README for package \"" + name + "\".");
+
+	try{
+		var downloader = new Downloader();
+		var readme = await downloader.getReadme(name);
+	}
+	catch(e){
+		noReadme(e, name, downloader);
+		return;
+	}
+    
+	if(!save){
+		output(readme);
+	}
+	else{
+		fs.writeFileSync(program.save, readme);
+		output("Saved at: " + program.save);
+	}
+    
+
+}
