@@ -16,6 +16,20 @@ snippets.get("express").then(function(result){
 });
 ```
 
+### CLI
+
+Extract and print code snippets on the command line:
+
+```sh
+npm-code-snippets <package> [options]
+```
+
+Extract and save code snippets into a JSON file at `<path>`
+
+```sh
+npm-code-snippets <package> -s <path>
+```
+
  ## Install
  
  ```sh
@@ -23,6 +37,16 @@ snippets.get("express").then(function(result){
  ```
 
  Currently not published on NPM.
+
+ ## Install the CLI Application
+
+To use the CLI command `npm-code-snippets` you will need to install the package globally.
+
+```sh
+npm install -g 
+```
+
+Alternatively, you can run the cli.js file directly without installing if you have the path to the cli.js file. For example, from the root directory call `node cli` instead of `npm-code-snippets`.
 
 ## API
 
