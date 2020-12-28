@@ -1,22 +1,21 @@
 /*
- * This example shows how to mine the NPM website for readmes.
- * I've done this as a test of the code ;)
- * Currently doesn't handle timeouts but does report errors.
- * You can also use the errors to get some stats at the end of the run.
+ * This file does a mass extraction of code snippets and saves them to a file.
  */
 
-
-
-const { Downloader } = require("../lib");
+const { Downloader, Extractor } = require("../lib");
 const fs = require("fs");
+const { time } = require("console");
 
 //all package entries url
 const allDocsURL = "https://replicate.npmjs.com/_all_docs";
 
+//destination
+const SNIPPET_FILE = "snippets.json";
+
 /**
  * Max number of packages to download readmes for.
  */
-const MAX = 2000; 
+const MAX = 100; 
 
 const START = 0;
 
@@ -27,6 +26,7 @@ const START = 0;
  */
 const BATCH_SIZE = 5; 
 
+var first = true;
 var readmes = [];
 
 async function getAllDocs(){
@@ -93,13 +93,45 @@ async function doBatch(batch){
 	return await Promise.all(promiseArray);
 }
 
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+
+function getSnippets(readme, package){
+    var snippets = [];
+    if(readme){
+        var extractor = new Extractor();
+        snippets = extractor.extract(readme);
+    }
+
+    var toWrite = {
+        name: package,
+        snippets: snippets,
+    }
+    toWrite = JSON.stringify(toWrite);
+    if(first){
+        first = false;
+    }
+    else{
+        toWrite = "," + toWrite;
+    }
+
+    fs.appendFileSync(SNIPPET_FILE, toWrite);
+}
+
 async function main(){
 	var packageNames = await getPackageNames();
     
-	console.log(packageNames.length + " packages.");
-	console.log("Downloading READMEs " + START + " to " + MAX + ".");
+    console.log(packageNames.length + " packages.");
     
-	//stats
+    shuffleArray(packageNames);
+
+    fs.writeFileSync(SNIPPET_FILE, '[');
+
+    //stats
 	//you could also pipe the console to a file and process the logs after the fact for the same stats
 	//but lets do it as we go to show its possible
 	var successes = 0;
@@ -180,7 +212,8 @@ async function main(){
 							sites[urlParts[1]] = (sites[urlParts[1]] || 0) + 1;
 						}
 					}
-				}
+                }
+            
 
                 
 				//large downloads may exeed alloted ram,
@@ -191,14 +224,23 @@ async function main(){
 				//save the output object with readme
 				// out.readme = c.readme;
 				// readmes.push(out);
-			}
+            }
+            
+            //after errors do snippets
+            for(var c of current){
+                getSnippets(c.readme, c.name);
+            }
             
 			//reset batch
 			batch = [];
 		}
         
 		i++;
-	}
+    }
+    
+    fs.appendFileSync(SNIPPET_FILE, ']');
+
+    JSON.parse(fs.readFileSync(SNIPPET_FILE))
     
 	console.log("END");
 	//packages with readmes

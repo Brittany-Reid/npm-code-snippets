@@ -91,6 +91,7 @@ async function snippet(name){
 		}
 		else{
 			output("Cannot extract snippets for package \"" + name + "\".");
+			info(e.message);
 		}
         
 		return;

@@ -155,6 +155,7 @@ var extractor = new Extractor();
 |-|-|-|
 |`langaugeFilter`|`string[]`|Array of string langauge aliases to use as either a whitelist or blacklist, depending on the `whitelist` option. By default uses the aliases in `Extractor.NODE_ALIAS` and `Extractor.NO_ALIAS`. 
 |`whitelist`|`boolean`|Sets the langauge filter to a whitelist on `true`, a blacklist on `false`. By default set to `true`.
+|`filters`|`((code: string) => boolean)[]`|Array of filter functions that operate on snippets code and return `true` if kept. By default filters NPM commands, terminal commands and JSON objects.
 
 #### extract(markdown: string): string[]
 Extract code snippets from a given string of markdown text.
@@ -190,46 +191,3 @@ npm run coverage
 
 - The code in NCS was originally used to extract code snippets for [node_code_query](https://github.com/damorimRG/node_code_query), a REPL environment with integrated code search. 
 
-
-
-<!-- 
-
-## Install the CLI Application
-
-To use the CLI command `npm-code-snippets` you will need to install the package globally.
-
-```sh
-npm install -g 
-```
-
-## Usage
-
-### CLI:
-```sh
-npm-code-snippets [options] <package> 
-```
-
-## Node.js:
-```node
-//TODO
-```
-#
-## API
-
-### get(name : string, options : object) : Array
-
-Given a package name, download and extract code snippets for that package. Returns an array of strings.
-
-```node
-//TODO
-```
-
-### extract(contents : string, options : object) : Array
-
-Given a string of markdown, extract code snippets. Returns an array of strings.
-
-```node
-//TODO
-```
-
--->
