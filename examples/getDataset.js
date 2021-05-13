@@ -76,18 +76,16 @@ async function doName(name){
 	var errors = [];
 	try{
 		registryData = await downloader.getRegistryData(name);
+		readme = await downloader.getReadme(name, registryData);
+		var repoUrl;
 		if(registryData["repository"]){
 			var repoUrl = registryData["repository"]["url"];
 			if(repoUrl){
-				var repo = repoUrl.split("/");
-				repo = (repo[repo.length-2] + "/" + repo[repo.length-1]).replace(".git", "");
-				repoData = await new GitHubMiner().getRepoData(repo);
+				repoUrl = repoUrl.split("/");
+				repoUrl = (repoUrl[repoUrl.length-2] + "/" + repoUrl[repoUrl.length-1]).replace(".git", "");
 			}
 		}
-		else{
-			repoData = await new GitHubMiner().getRepoData();
-		}
-		readme = await downloader.getReadme(name, registryData);
+		repoData = await new GitHubMiner().getRepoData(repoUrl);
 	} catch(e){
 		errors = downloader.events;
 		errors.push(e.message);
