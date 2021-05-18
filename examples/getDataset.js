@@ -6,6 +6,8 @@ const { Downloader, Extractor } = require("../lib");
 const fs = require("fs");
 const { time } = require("console");
 const GitHubMiner = require("../lib/extractor/githubminer");
+const { resolve } = require("path");
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 //all package entries url
 const allDocsURL = "https://replicate.npmjs.com/_all_docs";
@@ -18,16 +20,17 @@ const SNIPPET_FILE = "snippets.json";
  */
 const MAX = 99999999999; 
 
-const START = 0;
+const START = 1054115;
 
 /**
  * Max number of requests to send asynchronously.
  * Node.js is single threaded but this does improve total download time.
  * You just don't want to send too many requests at the same time.
  */
-const BATCH_SIZE = 5; 
+const BATCH_SIZE = 30; 
 
 var first = true;
+if(START !== 0) first = false;
 var readmes = [];
 
 async function getAllDocs(){
@@ -68,8 +71,11 @@ async function getPackageNames(){
 	return packageNames;
 }
 
-async function doName(name){
+async function doName(name){;
 	var downloader = new Downloader();
+	// var del = Math.round(Math.random())*Math.round(Math.random()*10000);
+	// console.log(del)
+	// await delay(del)
 	var readme;
 	var registryData;
 	var repoData;
@@ -101,10 +107,40 @@ async function doName(name){
 async function doBatch(batch){
 	var promiseArray = [];
 	for(var b of batch){
-		promiseArray.push(doName(b));
+		promiseArray.push(new Promise(async (resolve, reject)=>{
+			var t = setTimeout(()=>{
+				clearTimeout(t);
+				reject(new Error("timeout"));
+			}, 1000000)
+			try{
+				var p = await doName(b);
+				clearTimeout(t);
+				resolve(p);
+			}
+			catch(e){
+				reject(e);
+			}
+		}));
 	}
     
-	return await Promise.all(promiseArray);
+	try{
+		var p = await Promise.all(promiseArray);
+		return p;
+	}
+	catch(e){
+		if(e.message === "timeout") p = await doBatch(batch);
+		return p;
+	}
+
+	var repeat = false;
+	for(var e of p){
+		if(typeof e === "Error" && e.message === "timeout"){
+			repeat = true;
+			break;
+		}
+	}
+	if(repeat) p = await doBatch(batch);
+	return p;
 }
 
 function shuffleArray(array) {
@@ -143,7 +179,7 @@ async function main(){
     
     //shuffleArray(packageNames);
 
-    fs.writeFileSync(SNIPPET_FILE, '[');
+	if(first) fs.writeFileSync(SNIPPET_FILE, '[');
 
     //stats
 	//you could also pipe the console to a file and process the logs after the fact for the same stats
@@ -178,6 +214,7 @@ async function main(){
 			console.log("Batch " + (i+1));
             
 			for(var c of current){
+				if(!c || !c.errors) return;
 
 				var out = {
 					name: c.name,

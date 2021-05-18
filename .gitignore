@@ -3,3 +3,5 @@ node_modules
 .eslintrc.js
 .nyc_output
 all_docs.json
+snippets.json
+log.txt
