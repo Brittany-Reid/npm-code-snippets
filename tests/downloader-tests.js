@@ -60,32 +60,33 @@ describe("Downloader", function () {
 				await assert.rejects(async () => {await downloader.getRegistryData(package);}, Error(downloader.errors.registryFail.replace("%s", package)));
 			}).timeout(0);
 		});
-		describe("processGithubURL()", function(){
-			it("Should construct raw URL for repository URL", async function(){
-				var repo = "https://github.com/brittany-reid/npm-code-snippets";
-				var downloader = new Downloader();
-				var url = downloader.processGithubURL(repo);
-				//download our own readme
-				var readme = await Downloader.download(url + "README.md");
-				assert.strictEqual(typeof readme, "string");
-			}).timeout(0);
-			it("Should handle .git", async function(){
-				var repo = "https://github.com/brittany-reid/npm-code-snippets.git";
-				var downloader = new Downloader();
-				var url = downloader.processGithubURL(repo);
-				//download our own readme
-				var readme = await Downloader.download(url + "README.md");
-				assert.strictEqual(typeof readme, "string");
-			}).timeout(0);
-			it("Should handle git+", async function(){
-				var repo = "git+https://github.com/brittany-reid/npm-code-snippets";
-				var downloader = new Downloader();
-				var url = downloader.processGithubURL(repo);
-				//download our own readme
-				var readme = await Downloader.download(url + "README.md");
-				assert.strictEqual(typeof readme, "string");
-			}).timeout(0);
-		});
+		//moved to github miner
+		// describe("processGithubURL()", function(){
+		// 	it("Should construct raw URL for repository URL", async function(){
+		// 		var repo = "https://github.com/brittany-reid/npm-code-snippets";
+		// 		var downloader = new Downloader();
+		// 		var url = downloader.processGithubURL(repo);
+		// 		//download our own readme
+		// 		var readme = await Downloader.download(url + "README.md");
+		// 		assert.strictEqual(typeof readme, "string");
+		// 	}).timeout(0);
+		// 	it("Should handle .git", async function(){
+		// 		var repo = "https://github.com/brittany-reid/npm-code-snippets.git";
+		// 		var downloader = new Downloader();
+		// 		var url = downloader.processGithubURL(repo);
+		// 		//download our own readme
+		// 		var readme = await Downloader.download(url + "README.md");
+		// 		assert.strictEqual(typeof readme, "string");
+		// 	}).timeout(0);
+		// 	it("Should handle git+", async function(){
+		// 		var repo = "git+https://github.com/brittany-reid/npm-code-snippets";
+		// 		var downloader = new Downloader();
+		// 		var url = downloader.processGithubURL(repo);
+		// 		//download our own readme
+		// 		var readme = await Downloader.download(url + "README.md");
+		// 		assert.strictEqual(typeof readme, "string");
+		// 	}).timeout(0);
+		// });
 		describe("getReadmeFromRepo()", function(){
 			it("Should get readme from repo", async function(){
 				var downloader = new Downloader();

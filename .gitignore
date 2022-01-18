@@ -4,4 +4,5 @@ node_modules
 .nyc_output
 all_docs.json
 snippets.json
+npmData.json
 log.txt
